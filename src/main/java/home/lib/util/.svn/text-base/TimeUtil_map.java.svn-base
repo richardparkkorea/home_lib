@@ -1,0 +1,49 @@
+package _sst.util;
+
+import java.util.HashMap;
+
+/**
+ * <p>Title: </p>
+ *
+ * <p>Description: </p>
+ *
+ * <p>Copyright: Copyright (c) 2007</p>
+ *
+ * <p>Company: </p>
+ *
+ * @author not attributable
+ * @version 1.0
+ */
+public class TimeUtil_map {
+    /**
+     * statical members
+     */
+    private HashMap<String, TimeUtil> m_times = new HashMap<String, TimeUtil>();
+    /**
+     * manager in hashmap
+     *
+     * @param name String
+     * @return TimeUtil
+     */
+    public TimeUtil get(String name) {
+        if (m_times.get(name) == null) {
+            m_times.put(name, new TimeUtil());
+        }
+        return m_times.get(name);
+    }
+    /**
+     *
+     * @param name String
+     */
+    public void start(String name) {
+        get(name).start();
+    }
+    /**
+     *
+     * @param name String
+     * @return double
+     */
+    public double end(String name) {
+        return get(name).end();
+    }
+}

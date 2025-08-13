@@ -1,0 +1,107 @@
+package _sst.util;
+
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.DataInputStream;
+import java.io.ByteArrayInputStream;
+import java.util.Arrays;
+
+/**
+ * <p>Title: </p>
+ *
+ * <p>Description: </p>
+ *
+ * <p>Copyright: Copyright (c) 2007</p>
+ *
+ * <p>Company: </p>
+ *
+ * @author not attributable
+ * @version 1.0
+ */
+public class ByteArrayUtil {
+    public ByteArrayUtil() {
+    }
+
+    /**
+     *
+     * @param vals Object[]
+     * @return byte[]
+     */
+    public static byte[] getBytes(Object ...vals) {
+        //set recv
+        try {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            DataOutputStream dos = new DataOutputStream(bos);
+
+            for (int i = 0; i < vals.length; i++) {
+                Object v = vals[i];
+                //System.out.println("type:  "+v.getClass().toString());
+
+                if (v instanceof Integer) {
+                    dos.writeInt((Integer) v);
+                } else if (v instanceof Long) {
+                    dos.writeLong((Long) v);
+                } else if (v instanceof Double) {
+                    dos.writeDouble((Double) v);
+                } else if (v instanceof String) {
+                    dos.writeUTF((String) v);
+                } else if (v instanceof byte[]) {
+                    //System.out.println("byte size: "+((byte[])v).length);
+                    dos.write((byte[]) v);
+                } else {
+                    System.out.println("cast err:unknow type:" + v.getClass().toString());
+                    System.exit(0);
+                }
+            } //for
+
+            //System.out.println("test-----:"+bos.size());
+            return bos.toByteArray();
+            //byte[] bs = bos.toByteArray();
+            //sv2.setReturnValue(sk, bs, bs.length);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+
+    }
+
+
+    /**
+     *
+     * @param str String
+     * @param len int
+     * @return byte[]
+     */
+    public static byte[] getBytesWithFixLength(String str, int fixLength) {
+
+        //set recv
+        try {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            DataOutputStream dos = new DataOutputStream(bos);
+
+            dos.writeUTF((String) str);
+
+            if (dos.size() < fixLength) {
+                dos.write(new byte[fixLength - dos.size()]);
+            }
+
+            return bos.toByteArray();
+            //byte[] bs = bos.toByteArray();
+            //sv2.setReturnValue(sk, bs, bs.length);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+
+        //return java.util.Arrays.copyOf(str.getBytes(), fixLength);
+
+        // return Arrays.copyOf( str.getBytes() , fixLength );
+
+    }
+
+
+
+
+
+}

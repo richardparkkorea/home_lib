@@ -1,0 +1,95 @@
+package _sst.net.netqueue2;
+import _sst.net.net_common;
+import _sst.util.TimeUtil;
+/**
+ * <p>Title: </p>
+ *
+ * <p>Description: </p>
+ *
+ * <p>Copyright: Copyright (c) 2007</p>
+ *
+ * <p>Company: </p>
+ *
+ * @author not attributable
+ * @version 1.0
+ */
+class NqThreadX extends net_common  implements Runnable {
+    private Runnable myRunnable=null;
+    public double waitTimeout=10.0;
+
+    public NqThreadX() {
+        isInRunMethod = 0;
+        myRunnable=null;
+    }
+    public NqThreadX(java.lang.Runnable runa) {
+        isInRunMethod = 0;
+        myRunnable=runa;
+    }
+
+    protected int isInRunMethod = 0;
+    private Thread m_th = null;
+
+    public int start() {
+        if (m_th != null) {
+            System.out.println("_sst.ThreadX.start err(aleady running)");
+            System.exit(0);
+            return 0;
+        }
+
+        m_th = new Thread(this);
+        m_th.start();
+        return 1;
+    }
+
+    public void close() {
+        m_th = null;
+    }
+
+    int isAlive() {
+        return isInRunMethod;
+    }
+
+
+    public void wait2() {
+        //debug("ThreadX:it is wiat for come out~1");
+        TimeUtil tu=new TimeUtil();
+        tu.start();
+
+        while(tu.end()<this.waitTimeout) {
+            if (isInRunMethod == 0) {
+                close();
+                //debug("ThreadX:it is wiat for come out~3");
+                return;
+            }
+            try{
+                Thread.sleep(10);
+            } catch( java.lang.InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        close();
+        //debug("ThreadX:it is wiat for come out~2");
+    }
+
+
+    public void run() {
+        //debug("ThreadX:run-start");
+        isInRunMethod = 1;
+        if(myRunnable!=null) {
+            myRunnable.run();
+        } else {
+            run2();
+        }
+        isInRunMethod = 0;
+        //debug("ThreadX:run-end");
+    }
+
+
+
+    //inherity
+    public void run2() {
+
+    }
+
+
+}

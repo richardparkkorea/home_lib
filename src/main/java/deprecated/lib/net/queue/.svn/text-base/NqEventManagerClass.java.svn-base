@@ -1,0 +1,83 @@
+package _sst.net.netqueue2;
+
+import _sst.cplusplus.std_header;
+import java.util.ArrayList;
+
+/**
+ *
+ * <p>Title: </p>
+ *
+ * <p>Description: </p>
+ *
+ * <p>Copyright: Copyright (c) 2007</p>
+ *
+ * <p>Company: </p>
+ *
+ * @author not attributable
+ * @version 1.0
+ */
+class NqEventManagerClass extends std_header {
+    public NqEventManagerClass() {
+    }
+
+    Object m_event_lock = new Object(); //lang__criticalsection m_event_lock;
+    ArrayList m_event_list = new ArrayList(); //ArrayList<NqEventClass*,NqEventClass*> m_event_list;
+
+
+
+    public int addEvent(NqEventClass cl) {
+        synchronized (m_event_lock) {
+            m_event_list.add(cl);
+            return m_event_list.size();
+        }
+    }
+
+
+    public NqEventClass popAEvent() {
+        synchronized (m_event_lock) { //lang__blockLock cb(&m_event_lock);
+            if (m_event_list.size() == 0)
+                return null;
+            NqEventClass cl = (NqEventClass) m_event_list.get(0);
+            m_event_list.remove(0);
+
+            return cl;
+        }
+    }
+
+    public int getEventCount() {
+        //lang__blockLock cb(&m_event_lock);
+        synchronized (m_event_lock) {
+            return m_event_list.size();
+        }
+    }
+
+
+    public int getEventBufferLength() {
+        synchronized (m_event_lock) { //lang__blockLock cb(&m_event_lock);
+
+            int bytelength = 0;
+            int cnt = m_event_list.size();
+
+            for (int i = 0; i < cnt; i++) {
+                bytelength += ((NqEventClass) m_event_list.get(i)).len + 10;
+                bytelength += ((NqEventClass) m_event_list.get(i)).msg.length();
+            }
+            return bytelength;
+        }
+    }
+
+
+    public int clear() {
+        synchronized (m_event_lock) { //lang__blockLock cb(&m_event_lock);
+            ///clear event buffer
+            int cnt = getEventCount();
+            for (int k = 0; k < cnt; k++) {
+                NqEventClass e1 = popAEvent();
+                e1 = null;
+            }
+            return 1;
+        }
+    }
+
+
+};

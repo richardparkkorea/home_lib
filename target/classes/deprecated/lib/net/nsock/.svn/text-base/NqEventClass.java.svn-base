@@ -1,0 +1,59 @@
+package _sst.net.netqueue2;
+import _sst.cplusplus.std_header;
+
+
+/**
+ *
+ * <p>Title: </p>
+ *
+ * <p>Description: </p>
+ *
+ * <p>Copyright: Copyright (c) 2007</p>
+ *
+ * <p>Company: </p>
+ *
+ * @author not attributable
+ * @version 1.0
+ */
+final public class NqEventClass extends std_header {
+
+    public NqEventClass() {
+        buf = null;
+        len = 0;
+    }
+
+    void copyBuf(byte[] b, int l) {
+        copyBuf(b, 0, l);
+    }
+
+    void copyBuf(byte[] b, int pos, int l) {
+        buf = new byte[l + 1];
+        System.arraycopy(b, pos, buf, 0, l);
+        buf[l] = 0;
+        len = l;
+    }
+
+
+    public java.net.Socket sk = null;
+
+    //data
+
+    public byte[] buf = null;
+    public int len;
+    public String event_str = "";
+    public String sk_str="";
+
+    //noraml
+    //accept / close / recv
+    //
+    //stream
+    //step1 , step2-doing, step2-done , step3
+    public String msg = "";
+
+
+    int p; //pos
+    int e; //cnt
+    int sn; //sending number
+
+
+}

@@ -1,0 +1,95 @@
+
+package _sst.util;
+
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.HashMap;
+
+
+
+/**
+ *
+ * <p>Title: </p>
+ *
+ * <p>Description: </p>
+ *
+ * <p>Copyright: Copyright (c) 2007</p>
+ *
+ * <p>Company: </p>
+ *
+ * @author not attributable
+ * @version 1.0
+ */
+
+public class TimeUtil extends java.util.TimerTask {
+
+
+
+
+    /**
+     *
+     */
+    public TimeUtil() {
+        super();
+        start();
+    }
+    public TimeUtil(TimeUtil_interface inter, int milli_sec,int eventNumber) {
+        setTimer(inter,milli_sec,eventNumber);
+    }
+
+    /**
+     *
+     */
+    private long m_cur = 0;
+    public void start() {
+        m_cur = System.currentTimeMillis();
+    }
+
+    /**
+     *
+     * @return double - unit(second)
+     */
+    public double end() {
+        double d = (System.currentTimeMillis() - m_cur);
+        d /= 1000.0;
+        return d;
+    }
+
+
+
+    /**
+     *
+     * @param milli_sec int
+     */
+    private TimeUtil_interface m_if=null;
+    private int myEventNumber=0;
+    private Timer myTimer=null;
+
+    public void setTimer(TimeUtil_interface inter, int milli_sec,int eventNumber) {
+        killTimer();
+        //
+        m_if = inter;
+        myTimer=new Timer();
+        myTimer.schedule(this,0,milli_sec);
+        myEventNumber=eventNumber;
+    }
+    public void killTimer() {
+        if( myTimer!=null) {
+            myTimer.cancel();
+            myTimer=null;
+        }
+    }
+
+
+    public void run() {
+        if( m_if==null)
+            return;
+        try{
+            m_if.onTimer(this.myEventNumber);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }//method
+
+
+}//class
